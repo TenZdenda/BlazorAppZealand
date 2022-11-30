@@ -1,0 +1,80 @@
+﻿@layout AdminLayout
+@page "/admin/organization"
+@using BlazorAppZealand.Models
+@using System.Text.Json
+@using Data
+@using Newtonsoft.Json
+@inject HttpClient HttpClient
+
+<PageTitle>Organization</PageTitle>
+
+<div>
+    <div class="px-4 sm:px-6 lg:px-8 space-y-16">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-xl font-semibold text-gray-900">Organization</h1>
+            </div>
+        </div>
+        
+        <div class="space-y-10">
+            <div>
+                <table class="w-full">
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Name of organization</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Street</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">City</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Zip code</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">State</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Country</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <table class="border-2 border-red-400 w-full">
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Primary Clinical Contact</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Primary Pacs Contact</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                    <tr>
+                        <td class="whitespace-nowrap px-3 py-4">Primary Billing Contact</td>
+                        <td class="whitespace-nowrap px-3 py-4"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+@code {
+
+    // https://jsonplaceholder.typicode.com/users
+
+    List<Contact> _contacts = new List<Contact>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Todo
+    }
+
+}

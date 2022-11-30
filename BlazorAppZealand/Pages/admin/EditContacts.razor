@@ -1,0 +1,128 @@
+﻿@layout AdminLayout
+@page "/admin/contacts/edit/{ContactId}"
+@using Newtonsoft.Json
+@using System.Text
+@using System.Net.Http.Headers
+@using BlazorAppZealand.Models
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+<PageTitle>Add contact</PageTitle>
+
+<div class="space-y-10">
+    <div>
+        <h2 class="text-lg font-medium text-gray-900">Add new contact</h2>
+
+        <div class="mt-10 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+            <div>
+                <label for="first-name" class="block text-sm font-medium text-gray-700">First name</label>
+                <div class="mt-1">
+                    <input @bind="_firstName" placeholder="Zdeněk" type="text" id="first-name" name="first-name" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="last-name" class="block text-sm font-medium text-gray-700">Last name</label>
+                <div class="mt-1">
+                    <input @bind="_lastName" placeholder="Pašek" type="text" id="last-name" name="last-name" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Email</label>
+                <div class="mt-1">
+                    <input @bind="_email" placeholder="hey@example.com" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Phone</label>
+                <div class="mt-1">
+                    <input @bind="_phone" placeholder="+45 11 22 33 44" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Sec. Email</label>
+                <div class="mt-1">
+                    <input @bind="_secEmail" placeholder="hey@example2.com" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Mobile</label>
+                <div class="mt-1">
+                    <input @bind="_mobile" placeholder="+45 11 22 33 44" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+
+            <div>
+                <label for="company" class="block text-sm font-medium text-gray-700">Title</label>
+                <div class="mt-1">
+                    <input @bind="_title" placeholder="Product Engineer" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <button @onclick="CreateContact" class="max-w-[14rem] w-full text-center bg-black text-white px-10 py-3 rounded">Create contact</button>
+</div>
+
+@code {
+    
+    [Parameter]
+    public String ContactId { get; set; }
+
+    private string _firstName = string.Empty;
+    private string _lastName = string.Empty;
+    private string _email = string.Empty;
+    private string _phone = string.Empty;
+    private string _secEmail = string.Empty;
+    private string _mobile = string.Empty;
+    private string _title = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+    // HttpClient.DefaultRequestHeaders.Add("Authorization", "Zoho-oauthtoken 1000.67dacd1650959512ee124a7f5df5f1e2.d9ded36fb7722b11ffd83754bfae4a53");
+        var httpResponse = await HttpClient.GetAsync("https://www.zohoapis.eu/crm/v3/Contacts/" + ContactId + "?fields=First_Name,Last_Name,Email,Phone,Mobile,Title,Secondary_Email");
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            ResponseJson responseData = JsonConvert.DeserializeObject<ResponseJson>(await httpResponse.Content.ReadAsStringAsync());
+
+            _firstName = responseData.Contact.FirstName;
+            _lastName = responseData.Contact.LastName;
+            _email = responseData.Contact.Email;
+            _phone = responseData.Contact.Phone;
+            _secEmail = responseData.Contact.Secondary_Email;
+            _mobile = responseData.Contact.Mobile;
+            _title = responseData.Contact.Title;
+        }
+    }
+
+    private async Task CreateContact()
+    {
+        HttpClient.DefaultRequestHeaders.Add("Authorization", "Zoho-oauthtoken 1000.67dacd1650959512ee124a7f5df5f1e2.d9ded36fb7722b11ffd83754bfae4a53");
+        
+        var postBody = new
+        {
+            data = new []
+            {
+                new {
+                    First_Name = _firstName,
+                    Last_Name = _lastName,
+                    Email = _email,
+                    Phone = _phone,
+                    Secondary_Email = _secEmail,
+                    Mobile = _mobile,
+                    Title = _title,
+                }
+            }   
+        };
+
+        var response = await HttpClient.PostAsJsonAsync("https://www.zohoapis.eu/crm/v3/Contacts", postBody);
+
+        NavManager.NavigateTo("/admin/contacts");
+    }
+
+}

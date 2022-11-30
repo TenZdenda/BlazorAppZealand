@@ -1,0 +1,100 @@
+﻿@layout AdminLayout
+@page "/admin/contacts"
+@using BlazorAppZealand.Models
+@using System.Text.Json
+@using Data
+@using Newtonsoft.Json
+@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<PageTitle>Contacts</PageTitle>
+
+<div>
+    <div class="px-4 sm:px-6 lg:px-8">
+        <div class="sm:flex sm:items-center">
+            <div class="sm:flex-auto">
+                <h1 class="text-xl font-semibold text-gray-900">Contacts</h1>
+            </div>
+            <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
+                <a href="/admin/contacts/add" class="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 sm:w-auto">
+                    Add contact
+                </a>
+            </div>
+        </div>
+        @if (_contacts != null)
+        {
+            <div class="mt-8 flex flex-col">
+            <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">First name</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Last name</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Email</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Phone</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Sec. Email</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Mobile</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Title</th>
+                                    <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                        <span class="sr-only">Edit</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                            @foreach (var contact in _contacts)
+                            {
+                                <tr>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.FirstName</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.LastName</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.Email</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.Phone</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.Secondary_Email</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.Mobile</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.Title</td>
+                                    <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                        <NavLink href="/admin/contacts/edit/" class="text-indigo-600 hover:text-indigo-900">Edit<span class="sr-only">, @contact.FirstName</span></NavLink>
+                                        <button @onclick="() => DeleteContact(contact.id)">Delete</button>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+@code {
+
+    // https://jsonplaceholder.typicode.com/users
+
+    List<Contact> _contacts = new List<Contact>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // HttpClient.DefaultRequestHeaders.Add("Authorization", "Zoho-oauthtoken 1000.67dacd1650959512ee124a7f5df5f1e2.d9ded36fb7722b11ffd83754bfae4a53");
+        var httpResponse = await HttpClient.GetAsync("https://www.zohoapis.eu/crm/v3/Contacts?fields=First_Name,Last_Name,Email,Phone,Mobile,Title,Secondary_Email");
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            Response responseData = JsonConvert.DeserializeObject<Response>(await httpResponse.Content.ReadAsStringAsync());
+            _contacts = responseData.Contacts;
+        }
+    }
+
+    private async Task DeleteContact(string id)
+    {
+        var httpResponse = await HttpClient.DeleteAsync("https://www.zohoapis.eu/crm/v3/Contacts/" + id);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            await OnInitializedAsync();
+        }
+    }
+
+}
