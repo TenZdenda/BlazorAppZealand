@@ -16,53 +16,34 @@
             </div>
         </div>
         
-        <div class="space-y-10">
-            <div>
-                <table class="w-full">
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Name of organization</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Street</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">City</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Zip code</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">State</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Country</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                </table>
-            </div>
-            <div>
-                <table class="border-2 border-red-400 w-full">
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Primary Clinical Contact</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Primary Pacs Contact</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                    <tr>
-                        <td class="whitespace-nowrap px-3 py-4">Primary Billing Contact</td>
-                        <td class="whitespace-nowrap px-3 py-4"></td>
-                    </tr>
-                </table>
-            </div>
+        <div>
+            <table class="w-full">
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">Name of organization</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left"> King (Sample)</td>
+                </tr>
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">Street</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left">228 Runamuck Pl #2808</td>
+                </tr>
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">City</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left">Baltimore</td>
+                </tr>
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">Zip code</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left">@_zip</td>
+                </tr>
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">State</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left">@_state</td>
+                </tr>
+                <tr>
+                    <td class="whitespace-nowrap px-3 py-4">Country</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-left">United States</td>
+                </tr>
+            </table>
         </div>
-        
     </div>
 </div>
 
@@ -70,11 +51,30 @@
 
     // https://jsonplaceholder.typicode.com/users
 
-    List<Contact> _contacts = new List<Contact>();
+    private string _companyName = string.Empty;
+    private string _street = string.Empty;
+    private string _city = string.Empty;
+    private string _zip = string.Empty;
+    private string _state = string.Empty;
+    private string _country = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
-        // Todo
+        var httpResponse = await HttpClient.GetAsync("https://www.zohoapis.eu/crm/v3/org");
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            ResponseOrgJson? responseData = JsonConvert.DeserializeObject<ResponseOrgJson>(await httpResponse.Content.ReadAsStringAsync());
+
+            var organization = responseData.Organizations.First();
+
+            _companyName = organization.CompanyName;
+            _street = organization.Street;
+            _city = organization.City;
+            _zip = organization.Zip;
+            _state = organization.State;
+            _country = organization.Country;
+        }
     }
 
 }

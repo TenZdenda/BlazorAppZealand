@@ -11,7 +11,16 @@
 
 <div class="space-y-10">
     <div>
-        <h2 class="text-lg font-medium text-gray-900">Add new contact</h2>
+        <NavLink href="/admin/contacts">
+            <span class="flex items-center space-x-4">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+                </svg>
+                <span>Go back</span>
+            </span>
+        </NavLink>
+
+        <h2 class="text-lg font-medium text-gray-900 mt-10">Edit contact</h2>
 
         <div class="mt-10 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
             <div>
@@ -65,7 +74,7 @@
         </div>
     </div>
         
-    <button @onclick="CreateContact" class="max-w-[14rem] w-full text-center bg-black text-white px-10 py-3 rounded">Create contact</button>
+    <button @onclick="UpdateContact" class="max-w-[14rem] w-full text-center bg-black text-white px-10 py-3 rounded">Update contact</button>
 </div>
 
 @code {
@@ -88,19 +97,21 @@
 
         if (httpResponse.IsSuccessStatusCode)
         {
-            ResponseJson responseData = JsonConvert.DeserializeObject<ResponseJson>(await httpResponse.Content.ReadAsStringAsync());
+            Response? responseData = JsonConvert.DeserializeObject<Response>(await httpResponse.Content.ReadAsStringAsync());
 
-            _firstName = responseData.Contact.FirstName;
-            _lastName = responseData.Contact.LastName;
-            _email = responseData.Contact.Email;
-            _phone = responseData.Contact.Phone;
-            _secEmail = responseData.Contact.Secondary_Email;
-            _mobile = responseData.Contact.Mobile;
-            _title = responseData.Contact.Title;
+            var currentContact = responseData.Contacts.First();
+
+            _firstName = currentContact.FirstName;
+            _lastName = currentContact.LastName;
+            _email = currentContact.Email;
+            _phone = currentContact.Phone;
+            _secEmail = currentContact.Secondary_Email;
+            _mobile = currentContact.Mobile;
+            _title = currentContact.Title;
         }
     }
 
-    private async Task CreateContact()
+    private async Task UpdateContact()
     {
         HttpClient.DefaultRequestHeaders.Add("Authorization", "Zoho-oauthtoken 1000.67dacd1650959512ee124a7f5df5f1e2.d9ded36fb7722b11ffd83754bfae4a53");
         
