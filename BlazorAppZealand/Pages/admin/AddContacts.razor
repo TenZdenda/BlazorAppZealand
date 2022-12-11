@@ -22,7 +22,7 @@
         
         <h2 class="text-lg font-medium text-gray-900 mt-10">Add new contact</h2>
         
-        <EditForm Model=@Contact class="space-y-16">
+        <EditForm Model=@Contact class="space-y-16" OnValidSubmit=@CreateContact>
             <DataAnnotationsValidator />
 
             <div class="mt-10 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
@@ -43,41 +43,41 @@
                 </div>
 
                 <div>
-                    <label for="company" class="block text-sm font-medium text-gray-700">Email</label>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
                     <div class="mt-1">
-                        <InputText @bind-Value="Contact.Email" placeholder="johndoe@example.com" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <InputText @bind-Value="Contact.Email" placeholder="johndoe@example.com" type="email" name="email" id="email" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => Contact.Email)" />
                     </div>
                 </div>
 
                 <div>
-                    <label for="company" class="block text-sm font-medium text-gray-700">Phone</label>
+                    <label for="phone" class="block text-sm font-medium text-gray-700">Phone</label>
                     <div class="mt-1">
-                        <InputText @bind-Value="Contact.Phone" placeholder="+45 11 22 33 44" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <InputText @bind-Value="Contact.Phone" placeholder="+45 11 22 33 44" type="text" name="phone" id="phone" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => Contact.Phone)" />
                     </div>
                 </div>
 
                 <div>
-                    <label for="company" class="block text-sm font-medium text-gray-700">Sec. Email</label>
+                    <label for="secondary-email" class="block text-sm font-medium text-gray-700">Sec. Email</label>
                     <div class="mt-1">
-                        <InputText @bind-Value="Contact.Secondary_Email" placeholder="johndoe2@example.com" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <InputText @bind-Value="Contact.Secondary_Email" placeholder="johndoe2@example.com" type="email" name="secondary-email" id="secondary-email" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => Contact.Secondary_Email)" />
                     </div>
                 </div>
 
                 <div>
-                    <label for="company" class="block text-sm font-medium text-gray-700">Mobile</label>
+                    <label for="mobile" class="block text-sm font-medium text-gray-700">Mobile</label>
                     <div class="mt-1">
-                        <InputText @bind-Value="Contact.Mobile" placeholder="+45 44 33 22 11" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <InputText @bind-Value="Contact.Mobile" placeholder="+45 44 33 22 11" type="text" name="mobile" id="mobile" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => Contact.Mobile)" />
                     </div>
                 </div>
 
                 <div>
-                    <label for="company" class="block text-sm font-medium text-gray-700">Title</label>
+                    <label for="title" class="block text-sm font-medium text-gray-700">Title</label>
                     <div class="mt-1">
-                        <InputText @bind-Value="Contact.Title" placeholder="Product Engineer" type="text" name="company" id="company" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
+                        <InputText @bind-Value="Contact.Title" placeholder="Product Engineer" type="text" name="title" id="title" class="px-3 py-2 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" />
                         <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => Contact.Title)" />
                     </div>
                 </div>
@@ -97,21 +97,22 @@
         {
             data = new []
             {
-                new {
-                    Contact.First_Name,
-                    Contact.Last_Name,
-                    Contact.Email,
-                    Contact.Phone,
-                    Contact.Secondary_Email,
-                    Contact.Mobile,
-                    Contact.Title,
-                }
+                Contact
             }  
         };
+        
+        var json = JsonConvert.SerializeObject(postBody);
 
-        var response = await HttpClient.PostAsJsonAsync("https://www.zohoapis.eu/crm/v3/Contacts", postBody);
+        var response = await HttpClient.PostAsync(
+            "https://www.zohoapis.eu/crm/v3/Contacts",
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
+        var responseData = await response.Content.ReadAsStringAsync();
 
-        NavManager.NavigateTo("/admin/contacts");
+        if (response.IsSuccessStatusCode)
+        {
+            NavManager.NavigateTo("/admin/contacts");   
+        }
     }
 
 }
