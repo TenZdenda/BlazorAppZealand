@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 
 namespace BlazorAppZealand.Models
 {
@@ -8,15 +9,20 @@ namespace BlazorAppZealand.Models
         public string id { get; set; }
         
         [JsonProperty("First_Name")]
-        public string FirstName { get; set; }
-        
+        [Required]
+        public string First_Name { get; set; }
+
         [JsonProperty("Last_Name")]
-        public string LastName { get; set; }
+        [Required]
+        public string Last_Name { get; set; }
         
         [JsonProperty("Email")]
+        [Required]
+        [EmailAddress]
         public string Email { get; set; }
         
         [JsonProperty("Phone")]
+        [Required]
         public string Phone { get; set; }
         
         [JsonProperty("Mobile")]
