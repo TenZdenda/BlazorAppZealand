@@ -6,6 +6,7 @@
 @using Newtonsoft.Json
 @inject HttpClient HttpClient
 @inject NavigationManager NavigationManager
+@inject ToastService toastService
 
 <PageTitle>Contacts</PageTitle>
 
@@ -135,6 +136,7 @@
         if (httpResponse.IsSuccessStatusCode)
         {
             await OnInitializedAsync();
+            toastService.ShowToast("Contact successfully deleted!", ToastLevel.Success, "delete");
         }
     }
 

@@ -6,6 +6,7 @@
 @using BlazorAppZealand.Models
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
+@inject ToastService toastService
 
 <PageTitle>Add contact</PageTitle>
 
@@ -111,7 +112,8 @@
 
         if (response.IsSuccessStatusCode)
         {
-            NavManager.NavigateTo("/admin/contacts");   
+            NavManager.NavigateTo("/admin/contacts");
+            toastService.ShowToast("Contact successfully created!", ToastLevel.Success, "add");
         }
     }
 
