@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using BlazorAppZealand.Data;
 using BlazorAppZealand.Services;
+using Blazored.SessionStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,7 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
 builder.Services.AddScoped<ToastService>();
 builder.Services.AddHttpClient();
+builder.Services.AddBlazoredSessionStorage();
 
 builder.Services.AddScoped(sp => new HttpClient(new AddHeadersDelegatingHandler()));
 

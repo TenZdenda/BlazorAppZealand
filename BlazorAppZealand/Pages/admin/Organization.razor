@@ -5,6 +5,8 @@
 @using Data
 @using Newtonsoft.Json
 @inject HttpClient HttpClient
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
 
 <PageTitle>Organization</PageTitle>
 
@@ -20,15 +22,15 @@
             <table class="w-full border-collapse border border-slate-500">
                 <tr>
                     <td class="border border-slate-900 bg-stone-200 whitespace-nowrap px-3 py-4">Name of organization</td>
-                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left"> King (Sample)</td>
+                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">@_companyName</td>
                 </tr>
                 <tr>
                     <td class="border border-slate-900 bg-stone-200 whitespace-nowrap px-3 py-4">Street</td>
-                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">228 Runamuck Pl #2808</td>
+                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">@_street</td>
                 </tr>
                 <tr>
                     <td class="border border-slate-900 bg-stone-200 whitespace-nowrap px-3 py-4">City</td>
-                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">Baltimore</td>
+                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">@_city</td>
                 </tr>
                 <tr>
                     <td class="border border-slate-900 bg-stone-200 whitespace-nowrap px-3 py-4">Zip code</td>
@@ -40,7 +42,7 @@
                 </tr>
                 <tr>
                     <td class="border border-slate-900 bg-stone-200 whitespace-nowrap px-3 py-4">Country</td>
-                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">United States</td>
+                    <td class="border border-slate-900 whitespace-nowrap px-3 py-4 text-left">@_country</td>
                 </tr>
             </table>
         </div>
@@ -48,7 +50,6 @@
 </div>
 
 @code {
-
     // https://jsonplaceholder.typicode.com/users
 
     private string _companyName = string.Empty;
@@ -60,7 +61,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var httpResponse = await HttpClient.GetAsync("https://www.zohoapis.eu/crm/v3/org");
+        var result = await BrowserStorage.GetAsync<string>("accountId");
+        var accountId = result.Success ? result.Value : "";
+        
+        var httpResponse = await HttpClient.GetAsync("https://www.zohoapis.eu/crm/v3/org/" + accountId);
 
         if (httpResponse.IsSuccessStatusCode)
         {

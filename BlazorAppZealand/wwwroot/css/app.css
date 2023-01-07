@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 .active {
-    @apply bg-gray-900;
+    @apply bg-sky-800;
 }

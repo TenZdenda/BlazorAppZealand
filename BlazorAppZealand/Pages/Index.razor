@@ -1,42 +1,88 @@
 ﻿@page "/"
+@using BlazorAppZealand.Models
 @inject NavigationManager NavManager
+@inject ToastService toastService
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
 
 <PageTitle>Sign in</PageTitle>
 
-<body class="h-screen bg-stone-50">
+<div class="h-screen bg-stone-50">
   <div class="flex min-h-full flex-col justify-center py-12 sm:px-6 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-md">
       <h2 class="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">Sign in to your account</h2>
     </div>
-
+  
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
       <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
-        <form class="space-y-6" action="#" method="POST">
+        <EditForm Model=@_user class="space-y-6" OnValidSubmit=@UserLogin>
+          <DataAnnotationsValidator/>
+  
           <div>
             <label for="email" class="block text-sm font-medium text-gray-700">Your e-mail address</label>
             <div class="mt-1">
-              <input id="email" name="email" type="email" autocomplete="email" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+              <InputText @bind-Value="_user.Email" placeholder="john.doe@yahoo.com" id="email" name="email" type="email" autocomplete="email" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"/>
+              <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => _user.Email)"/>
             </div>
           </div>
-
+  
           <div>
             <label for="password" class="block text-sm font-medium text-gray-700">Your password</label>
             <div class="mt-1">
-              <input id="password" name="password" type="password" autocomplete="current-password" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm">
+              <InputText @bind-Value="_user.Password" placeholder="***********" id="password" name="password" type="password" autocomplete="current-password" required class="block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"/>
+              <ValidationMessage class="text-red-600 block font-light mt-2" For="@(() => _user.Password)"/>
             </div>
           </div>
-
-          <div class="flex items-center justify-center">
-            <div class="text-sm">
-              <a href="#" class="font-medium text-black underline">Forgot your password?</a>
-            </div>
-          </div>
-
-          <div>
-            <NavLink href="/admin/contacts" type="button" class="flex w-full justify-center border border-transparent bg-stone-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-stone-900 focus:outline-none">Sign in</NavLink>
-          </div>
-        </form>
+  
+          <input type="submit" class="flex w-full justify-center border border-transparent bg-stone-700 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-stone-900 focus:outline-none" value="Sign in"/>
+        </EditForm>
       </div>
     </div>
   </div>
-</body>
+</div>
+
+@code {
+  User _user = new User();
+
+  public async void UserLogin()
+  {
+    var signin = false;
+    
+    if (_user.Email == "zden0058@edu.zealand.dk" && _user.Password == "password")
+    {
+      await BrowserStorage.SetAsync("name", "Zdeněk Pašek");
+      await BrowserStorage.SetAsync("email", "zden0058@edu.zealand.dk");
+      await BrowserStorage.SetAsync("accountId", "507665000000334094");
+      await BrowserStorage.SetAsync("accountName", "Commercial Press (Sample)");
+
+      signin = true;
+    }
+    
+    else if (_user.Email == "artu0756@edu.zealand.dk" && _user.Password == "password")
+    {
+      await BrowserStorage.SetAsync("name", "Artūrs Noviks");
+      await BrowserStorage.SetAsync("email", "artu0756@edu.zealand.dk");
+      await BrowserStorage.SetAsync("accountId", "507665000000334093");
+      await BrowserStorage.SetAsync("accountName", "Morlong Associates (Sample)");
+
+      signin = true;
+    }
+    
+    else if (_user.Email == "vlad0867@edu.easj.dk" && _user.Password == "password")
+    {
+      await BrowserStorage.SetAsync("name", "Vladimir Šumilin");
+      await BrowserStorage.SetAsync("email", "vlad0867@edu.easj.dk");
+      await BrowserStorage.SetAsync("accountId", "507665000000334092");
+      await BrowserStorage.SetAsync("accountName", "Chapman (Sample)");
+
+      signin = true;
+    }
+
+    if (signin)
+    {
+      NavManager.NavigateTo("/admin/contacts");
+      toastService.ShowToast("Successfully log in!", ToastLevel.Success, "add");
+    }
+  } 
+
+}

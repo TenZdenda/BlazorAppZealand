@@ -1,15 +1,47 @@
+using System.Text;
+using BlazorAppZealand.Models;
+using Newtonsoft.Json;
+
 namespace BlazorAppZealand;
 
 public class AddHeadersDelegatingHandler : DelegatingHandler
 {
     public AddHeadersDelegatingHandler() : base(new HttpClientHandler())
-    {
-    }
+    { }
 
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        request.Headers.Add("Authorization", "Zoho-oauthtoken 1000.8caac6e6c49659267d14fdff8f2287e6.26d927fa3fdbdb8f7e1d3eea436789eb");  // Add whatever headers you want here
+        /*var token = "";
+        
+        var postBody = new
+        {
+            ZohoToken = new ZohoToken()
+            {
+                client_id = "1000.a8cb07878c0c33db883bcf5c37280bcf.5c8ee91aee382c6f7f88515a8b2ecb94",
+                client_secret = "1000.SBE9PNBZXWHKOLAUSWNNBHM7XVQLIC",
+                grant_type = "f3bda5b652a1ba6e83b7d70798421bf29dcdd91c06",
+                refresh_token = "refresh_token"
+            }
+        };
+        
+        var json = JsonConvert.SerializeObject(postBody);
 
-        return base.SendAsync(request, cancellationToken);
+        var httpResponse = await new HttpClient().PostAsync(
+            "https://accounts.zoho.eu/oauth/v2/token",
+            new StringContent(json, Encoding.UTF8, "application/json")
+        );
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            TokenResponse? responseData =
+                JsonConvert.DeserializeObject<TokenResponse>(await httpResponse.Content.ReadAsStringAsync());
+            
+            // Console.WriteLine(responseData?.AccessToken);
+            token = responseData?.AccessToken;
+        }*/
+
+        request.Headers.Add("Authorization", "Zoho-oauthtoken 1000.0a613be9a26f2cecdc15f72319689fc5.5d08e040fba2a6f8f427a72446d97d69");  // Add whatever headers you want here
+
+        return await base.SendAsync(request, cancellationToken);
     }
 }

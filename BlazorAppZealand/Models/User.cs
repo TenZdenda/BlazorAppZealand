@@ -1,11 +1,14 @@
-﻿namespace BlazorAppZealand.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace BlazorAppZealand.Models
 {
     public class User
     {
-        public string id { get; set; }
-        public string name { get; set; }
-        public string username { get; set; }
-        public string email { get; set; }
-
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        
+        [Required]
+        public string Password { get; set; }
     }
 }

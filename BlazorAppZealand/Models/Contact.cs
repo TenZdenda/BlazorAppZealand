@@ -33,5 +33,8 @@ namespace BlazorAppZealand.Models
         
         [JsonProperty("Secondary_Email")]
         public string Secondary_Email { get; set; }
+        
+        [JsonProperty("Account_Name")]
+        public AccountName Account_Name { get; set; }
     }
 }
