@@ -101,7 +101,7 @@
         var result = await BrowserStorage.GetAsync<string>("accountId");
         accountId = result.Success ? result.Value : "";
 
-        Contact.Account_Name = new AccountName() { Id = accountId };
+        Contact.Account_Name = new AccountName() { id = accountId };
     }
     
     private async Task CreateContact()

@@ -46,7 +46,7 @@
                                 <tbody class="divide-y divide-gray-200 bg-white">
                                 @foreach (var contact in _contacts)
                                 {
-                                    @if (contact.Account_Name != null && contact.Account_Name.Id == accountId)
+                                    @if (contact.Account_Name != null && contact.Account_Name.id == accountId)
                                     {
                                         <tr>
                                             <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">@contact.First_Name</td>

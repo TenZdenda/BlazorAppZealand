@@ -6,6 +6,8 @@
 @using BlazorAppZealand.Models
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage BrowserStorage
 
 <PageTitle>Add contact</PageTitle>
 
@@ -113,6 +115,11 @@
             Contact.Secondary_Email = currentContact.Secondary_Email;
             Contact.Mobile = currentContact.Mobile;
             Contact.Title = currentContact.Title;
+            
+            var result = await BrowserStorage.GetAsync<string>("accountId");
+            var accountId = result.Success ? result.Value : "";
+
+            Contact.Account_Name = new AccountName() { id = accountId };
         }
     }
 
